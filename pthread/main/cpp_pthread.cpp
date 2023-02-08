@@ -39,37 +39,63 @@ void print_thread_info(const char *extra = nullptr)
 
 void thread_func_inherited()
 {
-    while (true) {
-        print_thread_info("This is the INHERITING thread with the same parameters as our parent, including name. ");
-        std::this_thread::sleep_for(sleep_time);
-    }
+    print_thread_info("This is the INHERITING thread with the same parameters as our parent, including name. ");
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info("This is the INHERITING thread with the same parameters as our parent, including name. ");
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info("This is the INHERITING thread with the same parameters as our parent, including name. ");
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info("This is the INHERITING thread with the same parameters as our parent, including name. ");
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info("This is the INHERITING thread with the same parameters as our parent, including name. ");
+    std::this_thread::sleep_for(sleep_time);
 }
 
 void spawn_another_thread()
 {
     // Create a new thread, it will inherit our configuration
     std::thread inherits(thread_func_inherited);
+    inherits.join();
 
-    while (true) {
-        print_thread_info();
-        std::this_thread::sleep_for(sleep_time);
-    }
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+
 }
 
 void thread_func_any_core()
 {
-    while (true) {
-        print_thread_info("This thread (with the default name) may run on any core.");
-        std::this_thread::sleep_for(sleep_time);
-    }
+    print_thread_info("This thread (with the default name) may run on any core.");
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info("This thread (with the default name) may run on any core.");
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info("This thread (with the default name) may run on any core.");
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info("This thread (with the default name) may run on any core.");
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info("This thread (with the default name) may run on any core.");
+    std::this_thread::sleep_for(sleep_time);
 }
 
 void thread_func()
 {
-    while (true) {
-        print_thread_info();
-        std::this_thread::sleep_for(sleep_time);
-    }
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
+    print_thread_info();
+    std::this_thread::sleep_for(sleep_time);
 }
 
 esp_pthread_cfg_t create_config(const char *name, int core_id, int stack, int prio, uint32_t stack_alloc_caps)
@@ -100,6 +126,9 @@ extern "C" void app_main(void)
     cfg = create_config("Thread 2", 1, 3 * 1024, 5, MALLOC_CAP_SPIRAM);
     esp_pthread_set_cfg(&cfg);
     std::thread thread_2(thread_func);
+
+    thread_1.join();
+    thread_2.join();
 
     // Let the main task do something too
     while (true) {
