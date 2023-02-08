@@ -72,13 +72,14 @@ void thread_func()
     }
 }
 
-esp_pthread_cfg_t create_config(const char *name, int core_id, int stack, int prio)
+esp_pthread_cfg_t create_config(const char *name, int core_id, int stack, int prio, uint32_t stack_alloc_caps)
 {
     auto cfg = esp_pthread_get_default_config();
     cfg.thread_name = name;
     cfg.pin_to_core = core_id;
     cfg.stack_size = stack;
     cfg.prio = prio;
+    cfg.stack_alloc_caps = stack_alloc_caps;
     return cfg;
 }
 
@@ -90,13 +91,13 @@ extern "C" void app_main(void)
     std::thread any_core(thread_func_any_core);
 
     // Create a thread on core 0 that spawns another thread, they will both have the same name etc.
-    cfg = create_config("Thread 1", 0, 3 * 1024, 5);
+    cfg = create_config("Thread 1", 0, 3 * 1024, 5, MALLOC_CAP_SPIRAM);
     cfg.inherit_cfg = true;
     esp_pthread_set_cfg(&cfg);
     std::thread thread_1(spawn_another_thread);
 
     // Create a thread on core 1.
-    cfg = create_config("Thread 2", 1, 3 * 1024, 5);
+    cfg = create_config("Thread 2", 1, 3 * 1024, 5, MALLOC_CAP_SPIRAM);
     esp_pthread_set_cfg(&cfg);
     std::thread thread_2(thread_func);
 
